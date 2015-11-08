@@ -10,48 +10,78 @@
 
 #import "Card.h"
 #import "PlayingCardDeck.h"
+#import "CardMatchingGame.h"
 
 @interface ViewController ()
 
-@property (weak, nonatomic) IBOutlet UILabel *flipsLabel;
-@property (nonatomic) int flipsCount;
-@property (strong, nonatomic) Deck *deck;
+@property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *cardButtons;
+@property (strong, nonatomic) CardMatchingGame *game;
+@property (weak, nonatomic) IBOutlet UILabel *scoreLabel;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *matchModeControl;
+@property (weak, nonatomic) IBOutlet UILabel *logLabel;
 
 @end
 
 @implementation ViewController
 
-- (Deck *)deck
-{
-  if (!_deck)
-    _deck = [[PlayingCardDeck alloc] init];
-  return _deck;
-}
-
-- (void) setFlipsCount:(int)flipsCount
-{
-  _flipsCount = flipsCount;
-  self.flipsLabel.text = [NSString stringWithFormat:@"Flips: %d", self.flipsCount];
-  NSLog(@"flipsCount changed to %d", self.flipsCount);
+- (CardMatchingGame *)game {
+  if (!_game) {
+    _game = [[CardMatchingGame alloc] initWithCardCount:[self.cardButtons count]
+                                               fromDeck:[[PlayingCardDeck alloc] init]];
+  }
+  return _game;
 }
 
 - (IBAction)touchCardButton:(UIButton *)sender {
-  
-  if ([sender.currentTitle length]) {
-    // The front is being shown, flip to back.
-    [sender setBackgroundImage:[UIImage imageNamed:@"cardback"]
-                      forState:UIControlStateNormal];
-    [sender setTitle:@"" forState:UIControlStateNormal];
+  NSUInteger chosenButtonIndex = [self.cardButtons indexOfObject:sender];
+  [self.game flipCardAtIndex:chosenButtonIndex];
+  [self.matchModeControl setEnabled:NO];
+  [self updateUI];
+}
+
+- (IBAction)selectMatchModeControl:(UISegmentedControl *)sender {
+  NSInteger index = [sender selectedSegmentIndex];
+  switch (index) {
+    case 0:
+      self.game.matchMode = CardMatchingMode2;
+      break;
+    case 1:
+      self.game.matchMode = CardMatchingMode3;
+      break;
+    default:
+      // assert
+      NSLog(@"selectMatchModeControl: bad control index = %ld", index);
+      break;
   }
-  else
-  {
-    // The back is being shown, drawing a card an showing it.
-    Card *card = [self.deck drawRandomCard];
-    [sender setBackgroundImage:card ? [UIImage imageNamed:@"cardfront"] : nil
-                      forState:UIControlStateNormal];
-    [sender setTitle:[card contents] forState:UIControlStateNormal];
-    if (card) self.flipsCount++;
+}
+
+- (IBAction)touchReDealButton:(UIButton *)sender {
+  self.game = nil;
+
+  [self.matchModeControl setEnabled:YES];
+  [self.matchModeControl setSelectedSegmentIndex:0];
+  [self updateUI];
+}
+
+- (void)updateUI {
+  for (NSUInteger i = 0; i < [self.cardButtons count]; i++) {
+    Card *card = [self.game cardAtindex:i];
+    UIButton *button = self.cardButtons[i];
+    if (card.isChosen) {
+      [button setTitle:card.contents forState:UIControlStateNormal];
+      [button setBackgroundImage:[UIImage imageNamed:@"cardfront"] forState:UIControlStateNormal];
+      if (card.isMatched) {
+        [button setEnabled:NO];
+      }
+    }
+    else {
+      [button setTitle:@"" forState:UIControlStateNormal];
+      [button setBackgroundImage:[UIImage imageNamed:@"cardback"] forState:UIControlStateNormal];
+      [button setEnabled:YES];
+    }
   }
+  [self.scoreLabel setText:[NSString stringWithFormat:@"Score: %ld",self.game.score]];
+  [self.logLabel setText:self.game.log];
 }
 
 @end
