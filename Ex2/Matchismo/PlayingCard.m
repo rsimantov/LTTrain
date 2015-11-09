@@ -12,6 +12,10 @@
 
 @synthesize suit = _suit;
 
+-(instancetype) init {
+  return nil;
+}
+
 -(instancetype) initWithSuit:(NSString *)suit andRank:(NSUInteger)rank{
   
   if (self = [super init]) {
@@ -41,7 +45,7 @@ static const int RANK_BONUS = 4;
 static const int SUIT_BONUS = 1;
 //static const int MISMATCH_PENALTY = 1;
 
-+ (NSInteger) maxRank
++ (NSUInteger) maxRank
 {
   return [[PlayingCard rankStrings] count] - 1;
 }

@@ -26,7 +26,8 @@
 - (CardMatchingGame *)game {
   if (!_game) {
     _game = [[CardMatchingGame alloc] initWithCardCount:[self.cardButtons count]
-                                               fromDeck:[[PlayingCardDeck alloc] init]];
+                                               fromDeck:[[PlayingCardDeck alloc] init]
+                                 withCardMatchingNumber:self.cardMatchingNumber];
   }
   return _game;
 }

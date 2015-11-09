@@ -10,11 +10,14 @@
 
 @interface PlayingCard : Card
 
+-(instancetype) init NS_UNAVAILABLE;
+
+// Designated initializer
 -(instancetype) initWithSuit:(NSString *)suit andRank:(NSUInteger)rank NS_DESIGNATED_INITIALIZER;
 
 + (NSArray*) validSuits;
 + (NSArray*) rankStrings;
-+ (NSInteger) maxRank;
++ (NSUInteger) maxRank;
 
 @property (strong, nonatomic, readonly) NSString *suit;
 @property (nonatomic, readonly) NSUInteger  rank;
