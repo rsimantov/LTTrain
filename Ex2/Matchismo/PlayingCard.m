@@ -46,8 +46,8 @@ static const int SUIT_BONUS = 1;
   return [[PlayingCard rankStrings] count] - 1;
 }
 
-- (int) matched:(NSArray *)cards {
-  int score = 0, matchingCount=0;;
+- (NSInteger) matched:(NSArray *)cards {
+  NSInteger score = 0, matchingCount=0;;
   NSMutableArray * allCards = [[NSMutableArray alloc] initWithArray:cards];
   [allCards addObject:self];
   
@@ -66,7 +66,7 @@ static const int SUIT_BONUS = 1;
   }
   
   float scoreFactor = (matchingCount*matchingCount+1)/((float)[cards count]+1);
-  return score * ((scoreFactor < 1)? 1 : (int)scoreFactor);
+  return score * ((scoreFactor < 1)? 1 : (NSInteger)scoreFactor);
 }
 
 - (NSString*)suit

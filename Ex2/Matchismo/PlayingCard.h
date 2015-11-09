@@ -10,7 +10,7 @@
 
 @interface PlayingCard : Card
 
--(instancetype) initWithSuit:(NSString *)suit andRank:(NSUInteger)rank;
+-(instancetype) initWithSuit:(NSString *)suit andRank:(NSUInteger)rank NS_DESIGNATED_INITIALIZER;
 
 + (NSArray*) validSuits;
 + (NSArray*) rankStrings;

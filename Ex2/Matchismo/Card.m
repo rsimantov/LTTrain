@@ -14,7 +14,7 @@
 
 @implementation Card
 
-- (int) matched:(NSArray *)cards
+- (NSInteger) matched:(NSArray *)cards
 {
   int score = 0;
   for (Card *card in cards)

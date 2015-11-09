@@ -19,8 +19,12 @@ typedef NS_ENUM(NSInteger, CardMatchingMode) {
 
 @interface CardMatchingGame : NSObject
 
-// designated initializer
-- (instancetype)initWithCardCount:(NSUInteger)count fromDeck:(Deck*)deck;
+- (instancetype)init NS_UNAVAILABLE;
+
+// Designated initializer
+- (instancetype)initWithCardCount:(NSUInteger)count
+                         fromDeck:(Deck*)deck
+           withCardMatchingNumber:(NSUInteger)matchingNumber NS_DESIGNATED_INITIALIZER;
 
 - (void)flipCardAtIndex:(NSUInteger)index;
 - (Card *)cardAtindex:(NSUInteger)index;

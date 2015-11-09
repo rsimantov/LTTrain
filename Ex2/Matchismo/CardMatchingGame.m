@@ -9,23 +9,25 @@
 #import "CardMatchingGame.h"
 
 @interface CardMatchingGame()
+
 @property (nonatomic, readwrite) NSInteger score;
 @property (nonatomic, strong) NSMutableArray *cards; // of card
 @property (nonatomic, readwrite) NSString *log;
-
+@property (nonatomic) NSUInteger cardMatchingNumber;
 @end
 
 @implementation CardMatchingGame
 
-- (NSMutableArray *)cards {
-  if (!_cards) {
-    _cards = [[NSMutableArray alloc] init];
-  }
-  return _cards;
+-(instancetype) init {
+  return nil;
 }
 
--(instancetype) initWithCardCount:(NSUInteger)count fromDeck:(Deck *)deck {
+-(instancetype) initWithCardCount:(NSUInteger)count
+                         fromDeck:(Deck *)deck
+           withCardMatchingNumber:(NSUInteger)matchingNumber {
+
   if (self = [super init]) {
+    
     for (int i = 0; i < count; i++) {
       Card *card = [deck drawRandomCard];
       if (card) {
@@ -36,6 +38,10 @@
         break;
       }
     }
+
+    if (matchingNumber < 2 || matchingNumber > count)
+      return nil;
+    self.cardMatchingNumber = matchingNumber;
   }
   return self;
 }
@@ -77,7 +83,7 @@ static const int CHOOSING_COST = 1;
   if ( (self.matchMode == CardMatchingMode2 && chosenCount == 1) ||
        (self.matchMode == CardMatchingMode3 && chosenCount == 2)) {
     
-    int score = [card matched:chosenCards];
+    NSInteger score = [card matched:chosenCards];
     
     self.log = @"";
     
@@ -92,7 +98,7 @@ static const int CHOOSING_COST = 1;
       }
       card.matched = YES;
       
-      self.log = [NSString stringWithFormat:@"%@and %@ matched for %d points.",
+      self.log = [NSString stringWithFormat:@"%@and %@ matched for %ld points.",
                   self.log, card.contents, score];
     }
     else {
@@ -114,5 +120,13 @@ static const int CHOOSING_COST = 1;
 - (Card *) cardAtindex:(NSUInteger)index {
   return (index < [self.cards count]) ? self.cards[index] : nil;
 }
+
+- (NSMutableArray *)cards {
+  if (!_cards) {
+    _cards = [[NSMutableArray alloc] init];
+  }
+  return _cards;
+}
+
 
 @end

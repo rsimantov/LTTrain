@@ -19,7 +19,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *scoreLabel;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *matchModeControl;
 @property (weak, nonatomic) IBOutlet UILabel *logLabel;
-
 @end
 
 @implementation ViewController
@@ -35,35 +34,42 @@
 - (IBAction)touchCardButton:(UIButton *)sender {
   NSUInteger chosenButtonIndex = [self.cardButtons indexOfObject:sender];
   [self.game flipCardAtIndex:chosenButtonIndex];
-  [self.matchModeControl setEnabled:NO];
+  self.matchModeControl.enabled = NO;
   [self updateUI];
 }
 
+- (NSUInteger)cardMatchingNumber {
+  return self.matchModeControl.selectedSegmentIndex + 2;
+}
+
 - (IBAction)selectMatchModeControl:(UISegmentedControl *)sender {
-  NSInteger index = [sender selectedSegmentIndex];
-  switch (index) {
-    case 0:
-      self.game.matchMode = CardMatchingMode2;
-      break;
-    case 1:
-      self.game.matchMode = CardMatchingMode3;
-      break;
-    default:
-      // assert
-      NSLog(@"selectMatchModeControl: bad control index = %ld", index);
-      break;
-  }
+  self.game = nil;
 }
 
 - (IBAction)touchReDealButton:(UIButton *)sender {
   self.game = nil;
 
-  [self.matchModeControl setEnabled:YES];
-  [self.matchModeControl setSelectedSegmentIndex:0];
+  self.matchModeControl.enabled = YES;
+  self.matchModeControl.selectedSegmentIndex = 0;
   [self updateUI];
 }
 
 - (void)updateUI {
+  [self updateCardsUI];
+  [self updateScoreLabel];
+  [self updateLogLabel];
+}
+
+- (void)updateScoreLabel {
+  [self.scoreLabel setText:[NSString stringWithFormat:@"Score: %ld",self.game.score]];
+}
+
+- (void)updateLogLabel {
+  self.logLabel.text = self.game.log;
+}
+
+- (void)updateCardsUI {
+  
   for (NSUInteger i = 0; i < [self.cardButtons count]; i++) {
     Card *card = [self.game cardAtindex:i];
     UIButton *button = self.cardButtons[i];
@@ -71,17 +77,15 @@
       [button setTitle:card.contents forState:UIControlStateNormal];
       [button setBackgroundImage:[UIImage imageNamed:@"cardfront"] forState:UIControlStateNormal];
       if (card.isMatched) {
-        [button setEnabled:NO];
+        button.enabled = NO;
       }
     }
     else {
       [button setTitle:@"" forState:UIControlStateNormal];
       [button setBackgroundImage:[UIImage imageNamed:@"cardback"] forState:UIControlStateNormal];
-      [button setEnabled:YES];
+      button.enabled = YES;
     }
   }
-  [self.scoreLabel setText:[NSString stringWithFormat:@"Score: %ld",self.game.score]];
-  [self.logLabel setText:self.game.log];
 }
 
 @end

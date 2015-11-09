@@ -10,7 +10,7 @@
 
 @interface Card : NSObject
 
-- (int) matched:(NSArray *)cards;
+- (NSInteger) matched:(NSArray *)cards;
 
 @property (strong, nonatomic) 	NSString *contents;
 @property (nonatomic, getter=isChosen ) BOOL chosen;
