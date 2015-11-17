@@ -7,17 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
-
+#import "CardGame.h"
 #import "Deck.h"
-#import "Card.h"
 
-typedef NS_ENUM(NSInteger, CardMatchingMode) {
-  CardMatchingModeDefault = 0,
-  CardMatchingMode2 = CardMatchingModeDefault,
-  CardMatchingMode3
-};
-
-@interface CardMatchingGame : NSObject
+@interface CardMatchingGame : CardGame
 
 - (instancetype)init NS_UNAVAILABLE;
 
@@ -25,12 +18,5 @@ typedef NS_ENUM(NSInteger, CardMatchingMode) {
 - (instancetype)initWithCardCount:(NSUInteger)count
                          fromDeck:(Deck*)deck
            withCardMatchingNumber:(NSUInteger)matchingNumber NS_DESIGNATED_INITIALIZER;
-
-- (void)flipCardAtIndex:(NSUInteger)index;
-- (Card *)cardAtindex:(NSUInteger)index;
-
-@property (nonatomic, readonly) NSInteger score;
-@property (nonatomic) enum CardMatchingMode matchMode;
-@property (nonatomic, readonly) NSString *log;
 
 @end

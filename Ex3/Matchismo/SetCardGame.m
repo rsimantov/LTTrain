@@ -1,37 +1,35 @@
 //
-//  CardMatchingGame.m
+//  SetCardGame.m
 //  Matchismo
 //
-//  Created by Reuven Siman Tov on 11/4/15.
+//  Created by Reuven Siman Tov on 11/12/15.
 //  Copyright © 2015 Lightricks. All rights reserved.
 //
 
-#import "CardMatchingGame.h"
+#import "SetCardGame.h"
 #import "LogEntry.h"
+#import "SetDeck.h"
 
 @interface CardGame ()
 @property (nonatomic, readwrite) NSInteger score;
+
 @end
 
-
-@interface CardMatchingGame ()
+@interface SetCardGame ()
 @property (nonatomic, strong) NSMutableArray *cards; // of card
-@property (nonatomic) NSUInteger cardMatchingNumber;
 @property (nonatomic, readwrite) NSMutableArray *log;
 @end
 
-@implementation CardMatchingGame
+@implementation SetCardGame
 
 -(instancetype) init {
   return nil;
 }
 
--(instancetype) initWithCardCount:(NSUInteger)count
-                         fromDeck:(Deck *)deck
-           withCardMatchingNumber:(NSUInteger)matchingNumber {
-
+-(instancetype) initWithCardCount:(NSUInteger)count {
+  
   if (self = [super init]) {
-    
+    SetDeck *deck = [[SetDeck alloc] init];
     for (int i = 0; i < count; i++) {
       Card *card = [deck drawRandomCard];
       if (card) {
@@ -42,10 +40,6 @@
         break;
       }
     }
-
-    if (matchingNumber < 2 || matchingNumber > count)
-      return nil;
-    self.cardMatchingNumber = matchingNumber;
   }
   return self;
 }
@@ -56,7 +50,6 @@
 
 static const int MISMATCH_PENALTY = -2;
 static const int MATCH_BOUNS = 4;
-static const int CHOOSING_COST = 1;
 
 // selectCardAtIndex
 - (void)selectCardAtIndex:(NSUInteger)index {
@@ -74,24 +67,26 @@ static const int CHOOSING_COST = 1;
     }
     return;
   }
-  
+
   NSMutableArray *chosenCards = [self getChosenCards];
-  if ([chosenCards count] == self.cardMatchingNumber - 1) {
+  
+  if ([chosenCards count] == 2) {
     [self matchCards:chosenCards withCard:card];
   }
-
-  self.score -= CHOOSING_COST;
-  card.chosen = YES;
+  else {
+    card.chosen = YES;
+  }
 }
 
 - (NSMutableArray *)getChosenCards {
   NSPredicate *predicate =
-  [NSPredicate predicateWithFormat:@"isChosen == YES && matched == NO"];
+  [NSPredicate	predicateWithFormat:@"isChosen == YES && matched == NO"];
   return [NSMutableArray 	arrayWithArray:[self.cards filteredArrayUsingPredicate:predicate]];
 }
 
 - (void)matchCards:(NSMutableArray *)chosenCards withCard:(Card *)card {
   NSInteger score = [card matched:chosenCards];
+  card.chosen = YES;
   
   [chosenCards addObject:card];
   [self handleChosenCards:chosenCards thatMatch:score>0];
@@ -123,7 +118,7 @@ static const int CHOOSING_COST = 1;
     entry = [[LogEntry alloc] initWithText:text andCards:cards];
   }
   else {
-    NSString *text = [NSString stringWithFormat:@"@don't match! %ld points penalty!", score];
+    NSString *text = [NSString stringWithFormat:@"don't match! %ld points penalty!", score];
     entry = [[LogEntry alloc] initWithText:text andCards:cards];
   }
   [self.log addObject:entry];

@@ -7,8 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CardGame.h"
 
 @interface ViewController : UIViewController
 
+@property (strong, nonatomic, readonly) CardGame *game;
 
+- (void)touchCardButton:(UIButton *)sender;
+
+// protected
+- (CardGame *) createGame; //abstract
+- (NSArray *) gameCardButtons; //abstract
+- (void) updateCardsUI; // abstract
 @end

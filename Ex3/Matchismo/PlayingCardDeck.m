@@ -11,10 +11,8 @@
 
 @implementation PlayingCardDeck
 
--(instancetype)init
-{
-  if (self = [super init])
-  {
+-(instancetype)init {
+  if (self = [super init]) {
     for (NSString *suit in [PlayingCard validSuits]) {
       for (NSUInteger rank = 1; rank <= [PlayingCard maxRank]; rank++) {
         PlayingCard *card = [[PlayingCard alloc] initWithSuit:suit andRank:rank];
